@@ -1,1 +1,241 @@
-test
+import java.util.*;
+
+public class N12100_Easy {
+	static int arraySize = 0;
+	static int finalResult = 0;
+	@SuppressWarnings("resource")
+	public static void main(String[] args) {
+		// 입력
+		Scanner scanner = new Scanner(System.in);
+		arraySize = Integer.parseInt(scanner.nextLine());
+		String[][] inputArray = new String[arraySize][arraySize];
+		for (int i = 0; i < arraySize; i++) {
+			inputArray[i] = scanner.nextLine().split(" ");
+		}
+		/*
+		 * System.out.println("입력결과 출력"); for (int j = 0; j < arraySize; j++) {
+		 * System.out.println(Arrays.toString(inputArray[j])); }
+		 */
+		// 입력받은 문자열 배열 숫자 배열로 변경하기
+		int[][] numberArray = changeStringToInt(inputArray);
+		moveRight(0, numberArray);
+		moveLeft(0, numberArray);
+		moveUp(0, numberArray);
+		moveDown(0, numberArray);
+		// 결과출력
+		System.out.println(finalResult);
+	}
+
+	public static void moveRight(int count, int[][] numberArray) {
+		int[][] newNumberArray = numberArray;
+		int[][] resultNumberArray = new int[numberArray.length][numberArray[0].length];
+		if (count == 5) {
+			if (finalResult < getBiggestNumber(newNumberArray)) {
+				finalResult = getBiggestNumber(newNumberArray);
+			}
+		} else {
+			for (int i = 0; i < newNumberArray.length; i++) {// 가로 행 0,1,2
+				Queue<Integer> numberQueue = new LinkedList<>();
+				for (int j = newNumberArray[0].length - 1; j >= 0; j--) {// 세로 열2,1
+					if (newNumberArray[i][j] != 0) {
+						numberQueue.offer(newNumberArray[i][j]);
+					}
+				}
+				for (int j = newNumberArray[0].length - 1; j >= 0; j--) {
+					if (numberQueue.size() > 1) {//Queue에 2개 이상의 숫자가 있다면
+						int num1 = numberQueue.poll();// 제일 앞에거 꺼내고
+						int num2 = numberQueue.peek();// 그다음 앞에거 확인
+						if (num1 == num2) {
+							numberQueue.poll();// 같은 숫자가 2개 있으니까 둘다 꺼내주고
+							resultNumberArray[i][j] = num1 * 2;//2배로 만들어주기
+
+						} else {
+							resultNumberArray[i][j] = num1; //같은 숫자가 아닐 경우엔 그냥 
+						}
+					} else if (numberQueue.size() == 1) {//숫자 1개만 남아있을때(마지막 숫자인 경우)
+						int num1 = numberQueue.poll();// 제일 앞에거 꺼내고
+						resultNumberArray[i][j] = num1;
+					} else {//Queue가 비었을 경우 
+						resultNumberArray[i][j] = 0;
+					}
+				}
+			}
+			moveRight(count + 1, resultNumberArray);
+			moveLeft(count + 1, resultNumberArray);
+			moveUp(count + 1, resultNumberArray);
+			moveDown(count + 1, resultNumberArray);
+		}
+	}
+
+	public static void moveLeft(int count, int[][] numberArray) {
+		int[][] newNumberArray = numberArray;
+		int[][] resultNumberArray = new int[numberArray.length][numberArray[0].length];
+		if (count == 5) {
+			if (finalResult < getBiggestNumber(newNumberArray)) {
+				finalResult = getBiggestNumber(newNumberArray);
+			}
+		} else {
+			for (int i = 0; i < newNumberArray.length; i++) {// 가로 행 0,1,2
+				Queue<Integer> numberQueue = new LinkedList<>();
+				for (int j = 0; j < newNumberArray.length; j++) {// 세로 열0,1,2
+					if (newNumberArray[i][j] != 0) {
+						numberQueue.offer(newNumberArray[i][j]);
+					}
+				}
+				for (int j = 0; j < newNumberArray.length; j++) {
+					if (numberQueue.size() > 1) {
+						int num1 = numberQueue.poll();// 제일 앞에거 꺼내고
+						int num2 = numberQueue.peek();// 그다음 앞에거 확인
+						if (num1 == num2) {
+							numberQueue.poll();// num2 꺼내주기
+							resultNumberArray[i][j] = num1 * 2;
+
+						} else {
+							resultNumberArray[i][j] = num1;
+						}
+					} else if (numberQueue.size() == 1) {
+						int num1 = numberQueue.poll();// 제일 앞에거 꺼내고
+						resultNumberArray[i][j] = num1;
+					} else {
+						resultNumberArray[i][j] = 0;
+					}
+				}
+			}
+			/*
+			 * System.out.println("출력Left " + count); for (int j = 0; j < arraySize; j++) {
+			 * System.out.println(Arrays.toString(resultNumberArray[j])); }
+			 */
+			moveRight(count + 1, resultNumberArray);
+			moveLeft(count + 1, resultNumberArray);
+			moveUp(count + 1, resultNumberArray);
+			moveDown(count + 1, resultNumberArray);
+		}
+
+	}
+
+	public static void moveDown(int count, int[][] numberArray) {
+		int[][] newNumberArray = numberArray;
+		int[][] resultNumberArray = new int[numberArray.length][numberArray[0].length];
+		if (count == 5) {
+			if (finalResult < getBiggestNumber(newNumberArray)) {
+				finalResult = getBiggestNumber(newNumberArray);
+			}
+		} else {
+			for (int j = 0; j < newNumberArray[0].length; j++) {// 세로
+				Queue<Integer> numberQueue = new LinkedList<>();
+				for (int i = newNumberArray.length - 1; i >= 0; i--) {// 가로
+					if (newNumberArray[i][j] != 0) {
+						numberQueue.offer(newNumberArray[i][j]);
+					}
+				}
+				for (int i = newNumberArray.length - 1; i >= 0; i--) {
+					if (numberQueue.size() > 1) {
+						int num1 = numberQueue.poll();// 제일 앞에거 꺼내고
+						int num2 = numberQueue.peek();// 그다음 앞에거 확인
+						if (num1 == num2) {
+							numberQueue.poll();// num2 꺼내주기
+							resultNumberArray[i][j] = num1 * 2;
+
+						} else {
+							resultNumberArray[i][j] = num1;
+						}
+					} else if (numberQueue.size() == 1) {
+						int num1 = numberQueue.poll();// 제일 앞에거 꺼내고
+						resultNumberArray[i][j] = num1;
+					} else {
+						resultNumberArray[i][j] = 0;
+					}
+				}
+			}
+			/*
+			 * System.out.println("출력Down "+count); for(int k=0;k<arraySize;k++) {
+			 * System.out.println(Arrays.toString(resultNumberArray[k])); }
+			 */
+			moveRight(count + 1, resultNumberArray);
+			moveLeft(count + 1, resultNumberArray);
+			moveUp(count + 1, resultNumberArray);
+			moveDown(count + 1, resultNumberArray);
+		}
+	}
+
+	public static void moveUp(int count, int[][] numberArray) {
+		int[][] newNumberArray = numberArray;
+		int[][] resultNumberArray = new int[numberArray.length][numberArray[0].length];
+		if (count == 5) {
+			if (finalResult < getBiggestNumber(newNumberArray)) {
+				finalResult = getBiggestNumber(newNumberArray);
+			}
+		} else {
+			for (int j = 0; j < newNumberArray[0].length; j++) {// 세로
+				Queue<Integer> numberQueue = new LinkedList<>();
+				for (int i = 0; i < newNumberArray.length; i++) {// 가로
+					if (newNumberArray[i][j] != 0) {
+						numberQueue.offer(newNumberArray[i][j]);
+					}
+				}
+				for (int i = 0; i < newNumberArray.length; i++) {
+					if (numberQueue.size() > 1) {
+						int num1 = numberQueue.poll();// 제일 앞에거 꺼내고
+						int num2 = numberQueue.peek();// 그다음 앞에거 확인
+						if (num1 == num2) {
+							numberQueue.poll();// num2 꺼내주기
+							resultNumberArray[i][j] = num1 * 2;
+
+						} else {
+							resultNumberArray[i][j] = num1;
+						}
+					} else if (numberQueue.size() == 1) {
+						int num1 = numberQueue.poll();// 제일 앞에거 꺼내고
+						resultNumberArray[i][j] = num1;
+					} else {
+						resultNumberArray[i][j] = 0;
+					}
+				}
+			}
+			/*
+			 * System.out.println("출력Up " + count); for (int k = 0; k < arraySize; k++) {
+			 * System.out.println(Arrays.toString(resultNumberArray[k])); }
+			 */
+			moveRight(count + 1, resultNumberArray);
+			moveLeft(count + 1, resultNumberArray);
+			moveUp(count + 1, resultNumberArray);
+			moveDown(count + 1, resultNumberArray);
+		}
+	}
+
+	/**
+	 * 입력받은 문자열 배열 숫자 배열로 변경하기
+	 * 
+	 * @param inputArray 문자열 배열
+	 * @return
+	 */
+	public static int[][] changeStringToInt(String[][] inputArray) {
+		int[][] numberArray = new int[arraySize][arraySize];
+		for (int i = 0; i < arraySize; i++) {
+			for (int j = 0; j < arraySize; j++) {
+				numberArray[i][j] = Integer.parseInt(inputArray[i][j]);
+			}
+		}
+		return numberArray;
+	}
+
+	/**
+	 * 배열 속의 가장 큰 수 구하기
+	 * 
+	 * @param numberArray 입력 배열
+	 * @return
+	 */
+	public static int getBiggestNumber(int[][] numberArray) {
+		int biggestNumber = -1;
+		for (int i = 0; i < arraySize; i++) {
+			for (int j = 0; j < arraySize; j++) {
+				if (biggestNumber < numberArray[i][j]) {
+					biggestNumber = numberArray[i][j];
+				}
+			}
+		}
+		return biggestNumber;
+	}
+
+}
+
