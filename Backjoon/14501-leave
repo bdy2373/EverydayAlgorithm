@@ -1,0 +1,40 @@
+import java.util.*;
+//백준 제출할때는 클래스 명을 Main으로 변경하기 
+public class N14501_Leave {
+	static int result = 0;
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		// 입력
+		Scanner scanner = new Scanner(System.in);
+		int arraySize = Integer.parseInt(scanner.nextLine());
+		int[][] inputArray = new int[arraySize][2];
+		for(int i=0;i<arraySize;i++) {
+			inputArray[i][0] = scanner.nextInt();
+			inputArray[i][1] = scanner.nextInt();
+		}
+		scanner.close();
+		
+		addIncome(0, inputArray, 0);
+		
+		System.out.println(result);
+	}
+	public static void addIncome(int meetingDate, int[][] inputArray, int meetingPay) {
+		if(meetingDate>=inputArray.length) {
+			result = Math.max(result, meetingPay);
+			return;
+		}
+		
+		if(meetingDate + inputArray[meetingDate][0] <= inputArray.length) { //회사에 있을 경우
+			//상담을 할 경우
+			addIncome(meetingDate+inputArray[meetingDate][0], inputArray, meetingPay+inputArray[meetingDate][1]);
+		}else {
+			//상담을 안 할 경우 - 끝조건을 주기 위해서 추가 됨
+			//System.out.println(meetingDate+" no sangdam");
+			addIncome(meetingDate+inputArray[meetingDate][0], inputArray, meetingPay);
+		}
+		//다음날 상담을 할 경우
+		addIncome(meetingDate+1, inputArray, meetingPay);
+		
+	}
+
+}
